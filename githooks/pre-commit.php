@@ -53,7 +53,7 @@ foreach ($output as $key => $file) {
 if (Enable::PHP_LINT) {
     foreach ($output as $file) {
         $lintOutput = [];
-        $cmd = 'git show :'.escapeshellarg($file).' | '.$phpLintPath;
+        $cmd = 'git show :' . escapeshellarg($file) . ' | ' . $phpLintPath;
         exec($cmd, $lintOutput, $return);
         if ($return === 0) {
             continue;
@@ -70,13 +70,13 @@ if ($exitStatus !== 0) {
 
 if (Enable::ECS) {
     $csOutput = [];
-    $cmd = $ecsPath.' check --fix '.implode(' ', $output);
+    $cmd = $ecsPath . ' check --fix ' . implode(' ', $output);
     exec($cmd, $csOutput, $return);
     if ($return !== 0) {
         $exitStatus = 1;
     }
     echo implode("\n", $csOutput);
-    exec('git add '.implode(' ', $output));
+    exec('git add ' . implode(' ', $output));
 }
 
 if (Enable::DEBUG_MODE) {
