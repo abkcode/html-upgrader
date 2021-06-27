@@ -21,17 +21,17 @@ class App
             $html = file_get_contents($filePath);
             $document = new \Gt\Dom\HTMLDocument($html);
 
-            $classList = $document->querySelector(".row-fluid")->classList;
+            $classList = $document->querySelector('.row-fluid')
+                ->classList;
             $classList->remove('row-fluid');
             $classList->add('row');
 
             // echo $document->saveHTML();
             file_put_contents($filePathModified, $document->saveHTML());
-            echo shell_exec("git diff --no-index --color=always $filePath $filePathModified");
+            echo shell_exec("git diff --no-index --color=always {$filePath} {$filePathModified}");
             if (!unlink($filePathModified)) {
                 throw new Exception('Could not delete ($filePathModified).');
             }
-
         } catch (Exception $e) {
             echo $e->getMessage() . "\n";
         }
