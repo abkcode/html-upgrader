@@ -3,7 +3,7 @@
 const yargs = require('yargs');
 var fs = require('fs');
 var HTMLParser = require('node-html-parser');
-const { exec } = require('child_process');
+const { execSync } = require('child_process');
 
 const options = yargs
     .usage('Usage: [options] [--] <path>')
@@ -15,35 +15,27 @@ try {
     const applyChanges = options.apply;
 
     if (fs.existsSync(filePath)) {
-        fs.readFile(filePath, 'utf-8', (err, data) => {
-            let root = HTMLParser.parse(data, {
-                comment: true,
-            });
-            let elements = root.querySelectorAll('.row-fluid');
-            for (const element of elements) {
-                let classList = element.classList;
-                classList.remove('row-fluid');
-                classList.add('row');
-            }
-            let modifiedContent = root.toString();
-
-            fs.writeFile(filePathModified, modifiedContent, (err) => {
-                if (err) console.log(err);
-                console.log('Successfully Written to File.');
-
-                exec('git diff --no-index --color=always ' + filePath + ' ' + filePathModified, (error, stdout, stderr) => {
-                    console.log(`${stdout}`);
-                    if (applyChanges) {
-                        fs.rename(filePathModified, filePath, function (err) {
-                            if (err) throw err;
-                            console.log('Successfully renamed - AKA moved!');
-                        });
-                    } else {
-                        fs.unlinkSync(filePathModified);
-                    }
-                });
-            });
+        let fileContent = fs.readFileSync(filePath, { encoding: 'utf8', flag: 'r' });
+        let root = HTMLParser.parse(fileContent, {
+            comment: true,
         });
+        let elements = root.querySelectorAll('.row-fluid');
+        for (const element of elements) {
+            let classList = element.classList;
+            classList.remove('row-fluid');
+            classList.add('row');
+        }
+        let modifiedContent = root.toString();
+        fs.writeFileSync(filePathModified, modifiedContent);
+
+        const stdout = execSync('git diff --no-index --color=always ' + filePath + ' ' + filePathModified);
+        console.log(`${stdout}`);
+
+        if (applyChanges) {
+            fs.renameSync(filePathModified, filePath);
+        } else {
+            fs.unlinkSync(filePathModified);
+        }
     }
 } catch (err) {
     console.error(err);
