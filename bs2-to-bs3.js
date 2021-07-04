@@ -190,7 +190,6 @@ module.exports.bs2_to_bs3_rules = [
     {
         selector: '.navbar .nav',
         classList: {
-            remove: ['navbar', 'nav'],
             add: ['navbar-nav'],
         },
     },
