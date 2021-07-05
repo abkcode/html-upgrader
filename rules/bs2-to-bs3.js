@@ -706,7 +706,7 @@ module.exports.bs2_to_bs3_rules = [
                 value: 'Close',
             },
         ],
-        innerHTML: '<span aria-hidden="true">&times;</span>'
+        innerHTML: '<span aria-hidden="true">&times;</span>',
     },
     {
         selector: '.modal .modal-header h3',

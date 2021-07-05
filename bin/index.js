@@ -4,7 +4,8 @@ const yargs = require('yargs');
 var fs = require('fs');
 var HTMLParser = require('node-html-parser');
 const { exec } = require('child_process');
-const { bs2_to_bs3_rules } = require('../bs2-to-bs3');
+const { bs2_to_bs3_rules } = require('../rules/bs2-to-bs3');
+const { bs2_icons_to_bs3_glyphicons_rules } = require('../rules/bs2-icons-to-bs3-glyphicons');
 
 const options = yargs
     .usage('Usage: [options] [--] <path>')
@@ -15,7 +16,7 @@ try {
     const filePathModified = filePath + Date.now() + '.hcu.html';
     const applyChanges = options.apply;
 
-    const rules = [...bs2_to_bs3_rules];
+    const rules = [...bs2_to_bs3_rules, ...bs2_icons_to_bs3_glyphicons_rules];
 
     if (fs.existsSync(filePath)) {
         let fileContent = fs.readFileSync(filePath, { encoding: 'utf8', flag: 'r' });
